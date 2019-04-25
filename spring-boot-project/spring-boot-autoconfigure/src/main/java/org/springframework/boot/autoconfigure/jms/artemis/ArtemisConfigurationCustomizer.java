@@ -17,15 +17,16 @@
 package org.springframework.boot.autoconfigure.jms.artemis;
 
 import org.apache.activemq.artemis.core.config.Configuration;
-import org.apache.activemq.artemis.jms.server.embedded.EmbeddedJMS;
+import org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ;
 
 /**
  * Callback interface that can be implemented by beans wishing to customize the Artemis
  * JMS server {@link Configuration} before it is used by an auto-configured
- * {@link EmbeddedJMS} instance.
+ * {@link EmbeddedActiveMQ} instance.
  *
  * @author Eddú Meléndez
  * @author Phillip Webb
+ * @author Issam El-atif
  * @since 1.3.0
  * @see ArtemisAutoConfiguration
  */

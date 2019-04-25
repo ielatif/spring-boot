@@ -40,10 +40,11 @@ import org.springframework.util.StringUtils;
  * @author Eddú Meléndez
  * @author Phillip Webb
  * @author Stephane Nicoll
+ * @author Issam El-atif
  */
 class ArtemisConnectionFactoryFactory {
 
-	static final String EMBEDDED_JMS_CLASS = "org.apache.activemq.artemis.jms.server.embedded.EmbeddedJMS";
+	static final String EMBEDDED_ACTIVE_MQ_CLASS = "org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ";
 
 	private final ArtemisProperties properties;
 
@@ -70,9 +71,9 @@ class ArtemisConnectionFactoryFactory {
 	}
 
 	private void startEmbeddedJms() {
-		if (ClassUtils.isPresent(EMBEDDED_JMS_CLASS, null)) {
+		if (ClassUtils.isPresent(EMBEDDED_ACTIVE_MQ_CLASS, null)) {
 			try {
-				this.beanFactory.getBeansOfType(Class.forName(EMBEDDED_JMS_CLASS));
+				this.beanFactory.getBeansOfType(Class.forName(EMBEDDED_ACTIVE_MQ_CLASS));
 			}
 			catch (Exception ex) {
 				// Ignore
@@ -98,7 +99,7 @@ class ArtemisConnectionFactoryFactory {
 	 */
 	private ArtemisMode deduceMode() {
 		if (this.properties.getEmbedded().isEnabled()
-				&& ClassUtils.isPresent(EMBEDDED_JMS_CLASS, null)) {
+				&& ClassUtils.isPresent(EMBEDDED_ACTIVE_MQ_CLASS, null)) {
 			return ArtemisMode.EMBEDDED;
 		}
 		return ArtemisMode.NATIVE;
