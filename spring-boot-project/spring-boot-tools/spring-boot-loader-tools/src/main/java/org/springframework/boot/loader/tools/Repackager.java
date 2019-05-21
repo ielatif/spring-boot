@@ -44,6 +44,7 @@ import org.springframework.util.StringUtils;
  * @author Phillip Webb
  * @author Andy Wilkinson
  * @author Stephane Nicoll
+ * @author Issam El-atif
  */
 public class Repackager {
 
@@ -181,19 +182,27 @@ public class Repackager {
 		}
 		destination = destination.getAbsoluteFile();
 		File workingSource = this.source;
-		if (alreadyRepackaged() && this.source.equals(destination)) {
+		File backupFile = getBackupFile();
+		if (alreadyRepackaged()) {
+			if (backupFile.exists()) {
+				try (JarFile jarFileSource = new JarFile(backupFile)) {
+					repackage(jarFileSource, destination, libraries, launchScript);
+				}
+			}
+			else {
+				repackage(destination, libraries, launchScript);
+			}
 			return;
 		}
 		if (this.source.equals(destination)) {
-			workingSource = getBackupFile();
+			workingSource = backupFile;
 			workingSource.delete();
 			renameFile(this.source, workingSource);
 		}
 		destination.delete();
-		try {
-			try (JarFile jarFileSource = new JarFile(workingSource)) {
-				repackage(jarFileSource, destination, libraries, launchScript);
-			}
+
+		try (JarFile jarFileSource = new JarFile(workingSource)) {
+			repackage(jarFileSource, destination, libraries, launchScript);
 		}
 		finally {
 			if (!this.backupSource && !this.source.equals(workingSource)) {
